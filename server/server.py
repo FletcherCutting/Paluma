@@ -16,8 +16,6 @@ if os.path.isfile('./df.csv'):
 
 class PalumaPing(Resource):
     def get(self, identifier):
-        print('Print request from {}'.format(identifier))
-        
         df = pd.DataFrame({
             "identifier": [identifier],
             "type": ['ping'],
@@ -28,7 +26,20 @@ class PalumaPing(Resource):
         palumaData = pd.concat([palumaData, df])
         palumaData.to_csv('df.csv', index=False)
 
+class PalumaLog(Resource):
+    def get(self, identifier, info):
+        df = pd.DataFrame({
+            "identifier": [identifier],
+            "type": ['log'],
+            "info": [info]
+        })
+
+        global palumaData
+        palumaData = pd.concat([palumaData, df])
+        palumaData.to_csv('df.csv', index=False)
+
 api.add_resource(PalumaPing, '/ping/<string:identifier>')
+api.add_resource(PalumaLog, '/log/<string:identifier>/<string:info>')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
